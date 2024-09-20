@@ -4,16 +4,16 @@ import com.mysql.cj.jdbc.MysqlDataSource
 import scala.concurrent.duration._
 import scala.math._
 
-object MySQL {
+object MySQLQueryOne {
   def main(args: Array[String]): Unit = {
     // Initialize the DataSource
     val dataSource: DataSource = createDataSource()
 
     // Measure the execution time for the query 20 times
-    val executionTimes = measureTime(executeQuery(dataSource), 20)
+    val executionTimes = measureTime(executeQuery(dataSource), 5)
 
     // Drop the first 5 measurements to account for warm-up
-    val executionTimeMillis = executionTimes.drop(5).map(_.toMillis)
+    val executionTimeMillis = executionTimes.drop(2).map(_.toMillis)
 
     // Calculate average execution time
     val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size
@@ -29,7 +29,7 @@ object MySQL {
     println(f"Standard deviation: $stdDev%.2f ms")
   }
 
-  // Function to execute the query and print the results
+  // Function to execute the query
   def executeQuery(dataSource: DataSource): Unit = {
     val connection: Connection = dataSource.getConnection()
 
@@ -54,9 +54,9 @@ object MySQL {
       LIMIT 50;
       """
 
-    // Execute the query
+    // Execute the query without processing the result
     val statement = connection.createStatement()
-    val resultSet = statement.executeQuery(query)
+    statement.executeQuery(query)
 
     // Close the connection
     connection.close()
@@ -67,7 +67,7 @@ object MySQL {
     val ds = new MysqlDataSource()
     ds.setURL("jdbc:mysql://localhost:3306/pums2")
     ds.setUser("root")
-    ds.setPassword("Tvilling123456")
+    ds.setPassword("")
     ds
   }
 

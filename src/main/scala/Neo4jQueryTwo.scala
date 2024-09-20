@@ -3,7 +3,7 @@ import scala.concurrent.duration._
 import scala.collection.JavaConverters._
 import scala.math._
 
-object TaskTwo {
+object Neo4jQueryTwo {
   def main(args: Array[String]): Unit = {
     val uri = "bolt://localhost:7687"
     val user = "neo4j"
@@ -24,43 +24,26 @@ object TaskTwo {
         ORDER BY GjennomsnittligFattigdomsProsent DESC
         """
 
-      val result = session.run(query)
+      session.run(query)
 
-      if (!result.hasNext) {
-        println("Ingen resultater ble funnet.")
-      } else {
-        // Print table header once
-        println(f"${"Utdanningsnivå"}%-35s ${"GjennomsnittligFattigdomsProsent"}%-30s")
-        println("=" * 65)
-
-        // Iterate over results and print formatted table rows
-        while (result.hasNext) {
-          val record: Record = result.next()
-
-          val utdanningsnivå = record.get("Utdanningsnivå").asString()
-          val gjennomsnittligFattigdomsProsent = record.get("GjennomsnittligFattigdomsProsent").asDouble()
-
-          // Print each row with formatted columns
-          printf(f"${utdanningsnivå}%-35s ${gjennomsnittligFattigdomsProsent}%-30.2f\n")
-        }
-      }
     }
 
     // Function to measure execution time
     def measureTime[T](block: => T, repetitions: Int): List[Duration] = {
-      (1 to repetitions).map { _ =>
+      (1 to repetitions).map { iteration =>
         val start = System.nanoTime()
         block // Execute the block of code
         val end = System.nanoTime()
+        println(s"Query $iteration finished")
         Duration.fromNanos(end - start)
       }.toList
     }
 
     // Measure the execution time for the query 100 times
-    val executionTimes = measureTime(testQuery(), 20)
+    val executionTimes = measureTime(testQuery(), 5)
 
     // Drop the first 10 measurements to account for warm-up
-    val executionTimeMillis = executionTimes.drop(10).map(_.toMillis)
+    val executionTimeMillis = executionTimes.drop(2).map(_.toMillis)
 
     // Calculate average execution time
     val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size

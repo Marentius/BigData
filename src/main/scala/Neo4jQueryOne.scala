@@ -3,7 +3,7 @@ import scala.concurrent.duration._
 import scala.collection.JavaConverters._
 import scala.math._
 
-object TaskOne {
+object Neo4jQueryOne {
   def main(args: Array[String]): Unit = {
     val uri = "bolt://localhost:7687"
     val user = "neo4j"
@@ -31,12 +31,7 @@ object TaskOne {
         LIMIT 50;
         """
 
-      // Run the query and get results
-      val result = session.run(query)
-
-      // Convert result to list once to avoid issue with hasNext
-      val records = result.list().asScala
-      
+      session.run(query)
     }
 
     // Function to measure execution time
@@ -51,10 +46,10 @@ object TaskOne {
     }
 
     // Measure the execution time for the query 20 times
-    val executionTimes = measureTime(testQuery(), 20)
+    val executionTimes = measureTime(testQuery(), 5)
 
     // Drop the first 10 measurements to account for warm-up
-    val executionTimeMillis = executionTimes.drop(10).map(_.toMillis)
+    val executionTimeMillis = executionTimes.drop(2).map(_.toMillis)
 
     // Calculate average execution time
     val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size
