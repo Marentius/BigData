@@ -1,6 +1,6 @@
 import org.neo4j.driver.{AuthTokens, Driver, GraphDatabase, Session, Record}
 
-object Neo4j {
+object TaskOne {
   def main(args: Array[String]): Unit = {
     val uri = "bolt://localhost:7687"
     val user = "neo4j"
@@ -23,31 +23,40 @@ object Neo4j {
              o.poverty_income_ratio AS FattigdomsInntektsForhold,
              o.total_persons_earnings AS TotalePersoninntekter
       ORDER BY o.total_persons_earnings DESC, p.age DESC
-      LIMIT 50000;
+      LIMIT 1000;
       """
 
     val result = session.run(query)
 
-    while (result.hasNext) {
-      val record: Record = result.next()
+    if (!result.hasNext) {
+      println("Ingen resultater ble funnet.")
+    } else {
+      // Print table header once with adjusted column widths
+      println(f"${"Alder"}%-6s ${"Kjønn"}%-10s ${"Utdanningsnivå"}%-70s ${"Hovedfagfelt"}%-1000s ${"Sekundærfagfelt"}%-45s ${"NårSistJobbet"}%-30s ${"FattigdomsInntektsForhold"}%-30s ${"TotalePersoninntekter"}%-20s")
+      println("=" * 260)
 
-      // Safe conversion from String to Int, or default to 0 if it fails
-      val alderStr = record.get("Alder").asString()
-      val alder = try {
-        alderStr.toInt
-      } catch {
-        case _: NumberFormatException => 0
+      // Iterate over results and print formatted table rows
+      while (result.hasNext) {
+        val record: Record = result.next()
+
+        val alderStr = record.get("Alder").asString()
+        val alder = try {
+          alderStr.toInt
+        } catch {
+          case _: NumberFormatException => 0
+        }
+
+        val kjønn = record.get("Kjønn").asString()
+        val utdanningsnivå = record.get("Utdanningsnivå").asString()
+        val hovedfagfelt = record.get("Hovedfagfelt").asString()
+        val sekundærfagfelt = record.get("Sekundærfagfelt").asString()
+        val nårSistJobbet = record.get("NårSistJobbet").asString()
+        val fattigdomsInntektsForhold = record.get("FattigdomsInntektsForhold").asString()
+        val totalePersoninntekter = record.get("TotalePersoninntekter").asString()
+
+        // Print each row with formatted columns
+        printf(f"$alder%-6d $kjønn%-10s $utdanningsnivå%-45s $hovedfagfelt%-45s $sekundærfagfelt%-45s $nårSistJobbet%-30s $fattigdomsInntektsForhold%-30s $totalePersoninntekter%-20s\n")
       }
-
-      val kjønn = record.get("Kjønn").asString()
-      val utdanningsnivå = record.get("Utdanningsnivå").asString()
-      val hovedfagfelt = record.get("Hovedfagfelt").asString()
-      val sekundærfagfelt = record.get("SekundærtFagfelt").asString()
-      val nårSistJobbet = record.get("NårSistJobbet").asString()
-      val fattigdomsInntektsForhold = record.get("FattigdomsInntektsForhold").asString()
-      val totalePersoninntekter = record.get("TotalePersoninntekter").asString()
-
-      println(s"Alder: $alder, Kjønn: $kjønn, Utdanningsnivå: $utdanningsnivå, Hovedfagfelt: $hovedfagfelt, Sekundærfagfelt: $sekundærfagfelt, Når sist jobbet: $nårSistJobbet, FattigdomsInntektsForhold: $fattigdomsInntektsForhold, TotalePersoninntekter: $totalePersoninntekter")
     }
 
     session.close()
