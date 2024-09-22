@@ -1,9 +1,11 @@
-import org.neo4j.driver.{AuthTokens, Driver, GraphDatabase, Session, Record}
+package DBTwo
+
+import org.neo4j.driver.{AuthTokens, Driver, GraphDatabase, Session}
+
 import scala.concurrent.duration._
-import scala.collection.JavaConverters._
 import scala.math._
 
-object Neo4jQueryTwo {
+object Neo4jQueryTwoDBTwo {
   def main(args: Array[String]): Unit = {
     val uri = "bolt://localhost:7687"
     val user = "neo4j"
@@ -12,49 +14,46 @@ object Neo4jQueryTwo {
     val driver: Driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password))
     val session: Session = driver.session
 
-    // Function to execute the query
+
     def testQuery(): Unit = {
       val query =
         """
-        MATCH (p:Person)-[:HAR_UTDANNING]->(u:Utdanning),
-              (p)-[:HAR_ØKONOMISK_STATUS]->(o:Økonomi)
-        WITH u.education_level_id AS Utdanningsnivå,
-             AVG(TOINTEGER(o.poverty_income_ratio)) AS GjennomsnittligFattigdomsProsent
-        RETURN Utdanningsnivå, GjennomsnittligFattigdomsProsent
-        ORDER BY GjennomsnittligFattigdomsProsent DESC
+        MATCH (p:Person)-[:HAS_EDUCATION_LEVEL]->(e:EducationLevel)
+        WHERE p.poverty_income_ratio IS NOT NULL
+        RETURN e.description AS Utdanningsnivå, AVG(toFloat(p.poverty_income_ratio)) AS GjennomsnittligFattigdomsProsent
+        ORDER BY GjennomsnittligFattigdomsProsent DESC;
         """
 
       session.run(query)
-
     }
 
-    // Function to measure execution time
+
     def measureTime[T](block: => T, repetitions: Int): List[Duration] = {
       (1 to repetitions).map { iteration =>
         val start = System.nanoTime()
-        block // Execute the block of code
+        block
         val end = System.nanoTime()
         println(s"Query $iteration finished")
         Duration.fromNanos(end - start)
       }.toList
     }
 
-    // Measure the execution time for the query 100 times
-    val executionTimes = measureTime(testQuery(), 5)
 
-    // Drop the first 10 measurements to account for warm-up
-    val executionTimeMillis = executionTimes.drop(2).map(_.toMillis)
+    val executionTimes = measureTime(testQuery(), 10)
 
-    // Calculate average execution time
+
+    val executionTimeMillis = executionTimes.drop(4).map(_.toMillis)
+
+
     val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size
 
-    // Calculate variance
+
     val variance = executionTimeMillis.map(time => pow(time - average, 2)).sum / executionTimeMillis.size
 
-    // Calculate standard deviation
+
     val stdDev = sqrt(variance)
 
-    // Print the results
+
     println(f"Average execution time: $average%.2f ms")
     println(f"Standard deviation: $stdDev%.2f ms")
 
