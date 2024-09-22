@@ -5,7 +5,7 @@ import org.neo4j.driver.{AuthTokens, Driver, GraphDatabase, Session}
 import scala.concurrent.duration._
 import scala.math._
 
-object Neo4jQueryOneDBTwo {
+object QueryOne {
   def main(args: Array[String]): Unit = {
     val uri = "bolt://localhost:7687"
     val user = "neo4j"
@@ -18,13 +18,13 @@ object Neo4jQueryOneDBTwo {
     def testQuery(): Unit = {
       val query =
         """
-        MATCH (p:Person)-[:HAS_CURRENT_EDUCATION]->(ce:CurrentEducation),
-                      (p)-[:HAS_WORK_HISTORY]->(wlw:WhenLastWorked)
-                WHERE p.age > 18
-                  AND wlw.description = "Within the past 12 months"
-                WITH ce.description AS Utdanningsnivå, AVG(p.total_persons_earnings) AS GjennomsnittligInntekt
-                RETURN Utdanningsnivå, GjennomsnittligInntekt
-                ORDER BY GjennomsnittligInntekt DESC;
+        MATCH (p:Person)-[:HAS_EDUCATION_LEVEL]->(el:EducationLevel),
+                              (p)-[:HAS_WORK_HISTORY]->(wlw:WhenLastWorked)
+                        WHERE p.age > 18
+                          AND wlw.description = "Within the past 12 months"
+                        WITH el.description AS Utdanningsnivå, AVG(p.total_persons_earnings) AS GjennomsnittligInntekt
+                        RETURN Utdanningsnivå, GjennomsnittligInntekt
+                        ORDER BY GjennomsnittligInntekt DESC;
         """
 
       session.run(query)

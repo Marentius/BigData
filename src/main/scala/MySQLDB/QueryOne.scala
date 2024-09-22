@@ -7,7 +7,7 @@ import javax.sql.DataSource
 import scala.concurrent.duration._
 import scala.math._
 
-object MySQLQueryOne {
+object QueryOne {
   def main(args: Array[String]): Unit = {
 
 
@@ -34,20 +34,20 @@ object MySQLQueryOne {
     println(f"Standard deviation: $stdDev%.2f ms")
   }
 
-  val password = "Tvilling123456"
+
   def executeQuery(dataSource: DataSource): Unit = {
     val connection: Connection = dataSource.getConnection()
 
 
     val query =
       """
-      SELECT ce.description AS Utdanningsnivå,
+      SELECT el.description AS Utdanningsnivå,
       AVG(p.total_persons_earnings) AS GjennomsnittligInntekt
       FROM person p
-      join current_education ce ON p.current_education_id = ce.id
+      join education_level el ON p.education_level_id = el.id
       join when_last_worked wlw ON p.when_last_worked_id = wlw.id
       where p.age > 18 and wlw.description = "Within the past 12 months"
-      group by ce.description
+      group by el.description
       order by GjennomsnittligInntekt DESC;
       """
 

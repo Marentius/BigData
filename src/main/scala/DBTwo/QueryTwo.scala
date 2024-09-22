@@ -5,7 +5,7 @@ import org.neo4j.driver.{AuthTokens, Driver, GraphDatabase, Session}
 import scala.concurrent.duration._
 import scala.math._
 
-object Neo4jQueryTwoDBTwo {
+object QueryTwo {
   def main(args: Array[String]): Unit = {
     val uri = "bolt://localhost:7687"
     val user = "neo4j"
