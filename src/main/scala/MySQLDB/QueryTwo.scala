@@ -13,10 +13,10 @@ object QueryTwo {
     val dataSource: DataSource = createDataSource()
 
 
-    val executionTimes = measureTime(executeQuery(dataSource), 10)
+    val executionTimes = measureTime(executeQuery(dataSource), 100)
 
  
-    val executionTimeMillis = executionTimes.drop(4).map(_.toMillis)
+    val executionTimeMillis = executionTimes.drop(10).map(_.toMillis)
 
 
     val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size
@@ -62,7 +62,7 @@ object QueryTwo {
     val ds = new MysqlDataSource()
     ds.setURL("jdbc:mysql://localhost:3306/pums2")
     ds.setUser("root")
-    ds.setPassword(password)
+    ds.setPassword("Tvilling123456")
     ds
   }
 

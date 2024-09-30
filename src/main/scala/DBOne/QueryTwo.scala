@@ -18,12 +18,12 @@ object QueryTwo {
     def testQuery(): Unit = {
       val query =
         """
-        MATCH (p:Person)-[:HAR_UTDANNING]->(u:Utdanning),
-              (p)-[:HAR_ØKONOMISK_STATUS]->(o:Økonomi)
-        WITH u.education_level_id AS Utdanningsnivå,
-             AVG(TOINTEGER(o.poverty_income_ratio)) AS GjennomsnittligFattigdomsProsent
+        MATCH (p:Person)-[:HAS_EDUCATION]->(ed:Education),
+              (p)-[:HAS_ECONOMIC_STATUS]->(ec:Economy)
+        WITH ed.education_level_id AS Utdanningsnivå,
+             AVG(ec.poverty_income_ratio) AS GjennomsnittligFattigdomsProsent
         RETURN Utdanningsnivå, GjennomsnittligFattigdomsProsent
-        ORDER BY GjennomsnittligFattigdomsProsent DESC
+        ORDER BY GjennomsnittligFattigdomsProsent DESC;
         """
 
       session.run(query)
@@ -42,10 +42,10 @@ object QueryTwo {
     }
 
 
-    val executionTimes = measureTime(testQuery(), 10)
+    val executionTimes = measureTime(testQuery(), 100)
 
 
-    val executionTimeMillis = executionTimes.drop(4).map(_.toMillis)
+    val executionTimeMillis = executionTimes.drop(10).map(_.toMillis)
 
 
     val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size

@@ -18,14 +18,14 @@ object QueryOne {
     def testQuery(): Unit = {
       val query =
         """
-           MATCH (p:Person)-[:HAR_UTDANNING]->(u:Utdanning),
-                      (p)-[:JOBBET_SIST]->(wlw:NårSistJobbet),
-                      (p)-[:HAR_ØKONOMISK_STATUS]->(o:Økonomi)
-                WHERE toInteger(p.age) > 18
-                  AND wlw.when_last_worked_id = "Within the past 12 months"
-                WITH u.education_level_id AS Utdanningsnivå, AVG(toInteger(o.total_persons_earnings)) AS GjennomsnittligInntekt
-                RETURN Utdanningsnivå, GjennomsnittligInntekt
-                ORDER BY GjennomsnittligInntekt DESC;
+           MATCH (p:Person)-[:HAS_EDUCATION]->(ed:Education),
+              (p)-[:LAST_WORKED]->(w:WhenLastWorked),
+              (p)-[:HAS_ECONOMIC_STATUS]->(ec:Economy)
+        WHERE p.age > 18
+          AND w.when_last_worked_id = "Within the past 12 months"
+        WITH ed.education_level_id AS Utdanningsnivå, AVG(ec.total_persons_earnings) AS GjennomsnittligInntekt
+        RETURN Utdanningsnivå, GjennomsnittligInntekt
+        ORDER BY GjennomsnittligInntekt DESC;
         """
 
       session.run(query)
@@ -35,7 +35,7 @@ object QueryOne {
     def measureTime[T](block: => T, repetitions: Int): List[Duration] = {
       (1 to repetitions).map { iteration =>
         val start = System.nanoTime()
-        block // Execute the block of code
+        block
         val end = System.nanoTime()
         println(s"Query $iteration finished")
         Duration.fromNanos(end - start)
@@ -43,10 +43,10 @@ object QueryOne {
     }
 
 
-    val executionTimes = measureTime(testQuery(), 10)
+    val executionTimes = measureTime(testQuery(), 100)
 
 
-    val executionTimeMillis = executionTimes.drop(4).map(_.toMillis)
+    val executionTimeMillis = executionTimes.drop(10).map(_.toMillis)
 
 
     val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size

@@ -7,7 +7,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.math._
 
-object QueryOne {
+object QueryOneAggregate {
 
   def main(args: Array[String]): Unit = {
     // Kobling til MongoDB

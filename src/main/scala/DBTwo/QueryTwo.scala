@@ -39,10 +39,10 @@ object QueryTwo {
     }
 
 
-    val executionTimes = measureTime(testQuery(), 10)
+    val executionTimes = measureTime(testQuery(), 100)
 
 
-    val executionTimeMillis = executionTimes.drop(4).map(_.toMillis)
+    val executionTimeMillis = executionTimes.drop(10).map(_.toMillis)
 
 
     val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size

@@ -13,8 +13,16 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sbt: com.google.protobuf:protobuf-java:3.21.9:jar" level="project" />
     <orderEntry type="library" name="sbt: com.mysql:mysql-connector-j:8.0.33:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.projectreactor:reactor-core:3.5.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mongodb.scala:mongo-scala-bson_2.13:5.2.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mongodb.scala:mongo-scala-driver_2.13:5.2.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mongodb:bson-record-codec:5.2.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mongodb:bson:5.2.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mongodb:mongodb-driver-core:5.2.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mongodb:mongodb-driver-reactivestreams:5.2.0:jar" level="project" />
     <orderEntry type="library" name="sbt: org.neo4j.driver:neo4j-java-driver:4.3.3:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.reactivestreams:reactive-streams:1.0.3:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.reactivestreams:reactive-streams:1.0.4:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.13.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang:scala-reflect:2.13.6:jar" level="project" />
   </component>
 </module>

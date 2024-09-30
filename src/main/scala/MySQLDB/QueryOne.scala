@@ -10,34 +10,13 @@ import scala.math._
 object QueryOne {
   def main(args: Array[String]): Unit = {
 
-
-
-    val dataSource: DataSource = createDataSource()
-
-
-    val executionTimes = measureTime(executeQuery(dataSource), 10)
-
-
-    val executionTimeMillis = executionTimes.drop(4).map(_.toMillis)
-
-
-    val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size
-
-
-    val variance = executionTimeMillis.map(time => pow(time - average, 2)).sum / executionTimeMillis.size
-
-
-    val stdDev = sqrt(variance)
-
-
-    println(f"Average execution time: $average%.2f ms")
-    println(f"Standard deviation: $stdDev%.2f ms")
-  }
-
-
-  def executeQuery(dataSource: DataSource): Unit = {
-    val connection: Connection = dataSource.getConnection()
-
+    def createDataSource(): DataSource = {
+      val ds = new MysqlDataSource()
+      ds.setURL("jdbc:mysql://localhost:3306/pums2")
+      ds.setUser("root")
+      ds.setPassword("Tvilling123456")
+      ds
+    }
 
     val query =
       """
@@ -51,31 +30,31 @@ object QueryOne {
       order by GjennomsnittligInntekt DESC;
       """
 
+    def executeQuery(dataSource: DataSource): Unit = {
+      val connection: Connection = dataSource.getConnection()
+      val statement = connection.createStatement()
+      statement.executeQuery(query)
+      connection.close()
+    }
 
-    val statement = connection.createStatement()
-    statement.executeQuery(query)
+    def measureTime[T](block: => T, repetitions: Int): List[Duration] = {
+      (1 to repetitions).map { iteration =>
+        val start = System.nanoTime()
+        block // Execute the block of code
+        val end = System.nanoTime()
+        println(s"Query $iteration finished")
+        Duration.fromNanos(end - start)
+      }.toList
+    }
 
+    val dataSource: DataSource = createDataSource()
+    val executionTimes = measureTime(executeQuery(dataSource), 100)
+    val executionTimeMillis = executionTimes.drop(10).map(_.toMillis)
+    val average = executionTimeMillis.sum.toDouble / executionTimeMillis.size
+    val variance = executionTimeMillis.map(time => pow(time - average, 2)).sum / executionTimeMillis.size
+    val stdDev = sqrt(variance)
 
-    connection.close()
-  }
-
-
-  def createDataSource(): DataSource = {
-    val ds = new MysqlDataSource()
-    ds.setURL("jdbc:mysql://localhost:3306/pums2")
-    ds.setUser("root")
-    ds.setPassword(password)
-    ds
-  }
-
-
-  def measureTime[T](block: => T, repetitions: Int): List[Duration] = {
-    (1 to repetitions).map { iteration =>
-      val start = System.nanoTime()
-      block // Execute the block of code
-      val end = System.nanoTime()
-      println(s"Query $iteration finished")
-      Duration.fromNanos(end - start)
-    }.toList
+    println(f"Average execution time: $average%.2f ms")
+    println(f"Standard deviation: $stdDev%.2f ms")
   }
 }

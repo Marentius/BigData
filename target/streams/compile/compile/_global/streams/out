@@ -1,0 +1,7 @@
+[0m[[0m[31merror[0m] [0m[0mC:\Users\vetle\IdeaProjects\BigData\src\main\scala\MongoDBOne\QueryTwo.scala:29:82: could not find implicit value for parameter num: scala.math.Numeric[Double] (No implicit Ordering defined for Double.)[0m
+[0m[[0m[31merror[0m] [0m[0m      val maleAvgSalary = maleResults.map(_.getDouble("total_persons_earnings")).sum / maleResults.size[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\vetle\IdeaProjects\BigData\src\main\scala\MongoDBOne\QueryTwo.scala:32:86: could not find implicit value for parameter num: scala.math.Numeric[Double] (No implicit Ordering defined for Double.)[0m
+[0m[[0m[31merror[0m] [0m[0m      val femaleAvgSalary = femaleResults.map(_.getDouble("total_persons_earnings")).sum / femaleResults.size[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
