@@ -1,0 +1,5 @@
+package MongoDBOne
+
+object QueryTwo {
+
+}
